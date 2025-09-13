@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskMaster AI - Intelligent Task Management</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✅</text></svg>">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <h1 class="app-title">
+                    <span class="app-icon">✅</span>
+                    TaskMaster AI
+                </h1>
+            </div>
+            <div class="header-right">
+                <button class="btn btn--secondary header-btn" id="themeToggle" title="Toggle theme">
+                    <span class="theme-icon">🌙</span>
+                </button>
+                <button class="btn btn--primary header-btn" id="aiToggle" title="Toggle AI Assistant">
+                    <span class="ai-icon">🤖</span>
+                    AI Assistant
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Left Sidebar -->
+        <aside class="sidebar sidebar-left">
+            <div class="sidebar-section">
+                <h3>Categories</h3>
+                <div class="category-filters" id="categoryFilters">
+                    <button class="filter-btn active" data-category="all">
+                        <span class="filter-icon">📋</span>
+                        All Tasks
+                        <span class="filter-count" id="allCount">0</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Status</h3>
+                <div class="status-filters">
+                    <button class="filter-btn" data-status="pending">
+                        <span class="filter-icon">⏳</span>
+                        Pending
+                        <span class="filter-count" id="pendingCount">0</span>
+                    </button>
+                    <button class="filter-btn" data-status="completed">
+                        <span class="filter-icon">✅</span>
+                        Completed
+                        <span class="filter-count" id="completedCount">0</span>
+                    </button>
+                    <button class="filter-btn" data-status="overdue">
+                        <span class="filter-icon">🚨</span>
+                        Overdue
+                        <span class="filter-count" id="overdueCount">0</span>
+                    </button>
+                    <button class="filter-btn" data-status="today">
+                        <span class="filter-icon">📅</span>
+                        Due Today
+                        <span class="filter-count" id="todayCount">0</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Priority</h3>
+                <div class="priority-filters">
+                    <button class="filter-btn" data-priority="high">
+                        <span class="priority-dot priority-high"></span>
+                        High Priority
+                        <span class="filter-count" id="highCount">0</span>
+                    </button>
+                    <button class="filter-btn" data-priority="medium">
+                        <span class="priority-dot priority-medium"></span>
+                        Medium Priority
+                        <span class="filter-count" id="mediumCount">0</span>
+                    </button>
+                    <button class="filter-btn" data-priority="low">
+                        <span class="priority-dot priority-low"></span>
+                        Low Priority
+                        <span class="filter-count" id="lowCount">0</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="sidebar-section stats-section">
+                <h3>Statistics</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-number" id="totalTasks">0</span>
+                        <span class="stat-label">Total Tasks</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="completedToday">0</span>
+                        <span class="stat-label">Completed Today</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="productivityScore">0%</span>
+                        <span class="stat-label">Completion Rate</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Task Controls -->
+            <div class="task-controls">
+                <div class="search-container">
+                    <input type="text" class="form-control search-input" id="searchInput" placeholder="Search tasks...">
+                    <span class="search-icon">🔍</span>
+                </div>
+                <div class="sort-container">
+                    <select class="form-control sort-select" id="sortSelect">
+                        <option value="deadline">Sort by Deadline</option>
+                        <option value="priority">Sort by Priority</option>
+                        <option value="category">Sort by Category</option>
+                        <option value="created">Sort by Created Date</option>
+                    </select>
+                </div>
+                <button class="btn btn--primary" id="addTaskBtn">
+                    <span>➕</span>
+                    Add Task
+                </button>
+            </div>
+
+            <!-- Quick Add Form -->
+            <div class="quick-add-form">
+                <div class="quick-add-inputs">
+                    <input type="text" class="form-control quick-task-input" id="quickTaskInput" placeholder="Add a task quickly... (e.g., 'Meeting with team tomorrow at 2 PM')">
+                    <button class="btn btn--primary quick-add-btn" id="quickAddBtn">Add</button>
+                </div>
+            </div>
+
+            <!-- Task List -->
+            <div class="task-list-container">
+                <div class="task-list-header">
+                    <h2 id="taskListTitle">All Tasks</h2>
+                    <div class="bulk-actions" id="bulkActions" style="display: none;">
+                        <button class="btn btn--sm btn--secondary" id="selectAllBtn">Select All</button>
+                        <button class="btn btn--sm btn--primary" id="bulkCompleteBtn">Mark Complete</button>
+                        <button class="btn btn--sm btn--outline" id="bulkDeleteBtn">Delete Selected</button>
+                    </div>
+                </div>
+                <div class="task-list" id="taskList">
+                    <!-- Tasks will be dynamically inserted here -->
+                </div>
+            </div>
+        </main>
+
+        <!-- Right Sidebar - AI Assistant -->
+        <aside class="sidebar sidebar-right ai-assistant" id="aiAssistant">
+            <div class="ai-header">
+                <h3>
+                    <span class="ai-icon">🤖</span>
+                    AI Assistant
+                </h3>
+                <button class="btn btn--sm btn--outline ai-close" id="aiClose">✕</button>
+            </div>
+            
+            <div class="ai-chat" id="aiChat">
+                <div class="ai-message ai-message--assistant">
+                    <div class="ai-avatar">🤖</div>
+                    <div class="ai-content">
+                        <p>Hi! I'm your AI task assistant. I can help you create tasks, break down complex projects, and boost your productivity. What would you like to work on today?</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ai-suggestions" id="aiSuggestions">
+                <h4>Smart Suggestions</h4>
+                <div class="suggestion-list" id="suggestionList">
+                    <!-- AI suggestions will be inserted here -->
+                </div>
+            </div>
+
+            <div class="ai-input-container">
+                <div class="ai-input-wrapper">
+                    <input type="text" class="form-control ai-input" id="aiInput" placeholder="Ask me anything... (e.g., 'Schedule dentist appointment next Tuesday')">
+                    <button class="btn btn--primary ai-send" id="aiSend">Send</button>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Task Modal -->
+    <div class="modal hidden" id="taskModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Add New Task</h3>
+                <button class="btn btn--sm btn--outline modal-close" id="modalClose">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="taskForm">
+                    <input type="hidden" id="taskId">
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="taskTitle">Task Title *</label>
+                        <input type="text" class="form-control" id="taskTitle" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="taskDescription">Description</label>
+                        <textarea class="form-control" id="taskDescription" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="taskCategory">Category</label>
+                            <select class="form-control" id="taskCategory" required>
+                                <option value="">Select Category</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="taskPriority">Priority</label>
+                            <select class="form-control" id="taskPriority" required>
+                                <option value="">Select Priority</option>
+                                <option value="high">High</option>
+                                <option value="medium">Medium</option>
+                                <option value="low">Low</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="taskDeadline">Deadline</label>
+                        <input type="datetime-local" class="form-control" id="taskDeadline">
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn--outline" id="cancelBtn">Cancel</button>
+                        <button type="submit" class="btn btn--primary" id="saveBtn">Save Task</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-stats">
+                <span>Today's Progress: <strong id="footerProgress">0/0 tasks completed</strong></span>
+                <span class="footer-separator">•</span>
+                <span>Streak: <strong id="footerStreak">0 days</strong></span>
+                <span class="footer-separator">•</span>
+                <span class="footer-tip" id="footerTip">💡 Break large tasks into smaller, manageable subtasks</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
